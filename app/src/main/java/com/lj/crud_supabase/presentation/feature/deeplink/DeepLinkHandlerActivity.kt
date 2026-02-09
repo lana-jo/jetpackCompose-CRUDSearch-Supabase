@@ -1,0 +1,126 @@
+package com.lj.crud_supabase.presentation.feature.deeplink
+
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.rememberNavController
+import com.lj.crud_supabase.MainActivity
+import com.lj.crud_supabase.presentation.feature.auth.signin.SignInSuccessScreen
+import com.lj.crud_supabase.presentation.feature.deeplink.state.RedirectDestination
+import com.lj.crud_supabase.ui.theme.ManageProductsTheme
+import dagger.hilt.android.AndroidEntryPoint
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.handleDeeplinks
+import javax.inject.Inject
+import kotlin.getValue
+import kotlin.time.ExperimentalTime
+
+
+@AndroidEntryPoint
+class DeepLinkHandlerActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var supabaseClient: SupabaseClient
+
+    private val viewModel: DeepLinkHandlerViewModel by viewModels()
+
+    private lateinit var callback: (String, String) -> Unit
+
+    @OptIn(ExperimentalTime::class)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supabaseClient.handleDeeplinks(intent = intent,
+            onSessionSuccess = { userSession ->
+                Log.d("LOGIN", "Log in successfully with user info: ${userSession.user}")
+                userSession.user?.apply {
+                    callback(email ?: "", createdAt.toString())
+                }
+            })
+        setContent {
+            val navController = rememberNavController()
+            val emailState = remember { mutableStateOf("") }
+            val createdAtState = remember { mutableStateOf("") }
+            val state = viewModel.state.collectAsStateWithLifecycle().value
+            LaunchedEffect(Unit) {
+                handleDeepLink(intent)
+            }
+            LaunchedEffect(state.redirectDestination) {
+                when (state.redirectDestination) {
+                    is RedirectDestination.EmailConfirmation -> {
+                        // Success
+                        navigateToMainApp()
+                    }
+
+                    else -> Unit
+                }
+            }
+            LaunchedEffect(Unit) {
+                callback = { email, created ->
+                    emailState.value = email
+                    createdAtState.value = created
+                }
+            }
+            ManageProductsTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    SignInSuccessScreen(
+                        modifier = Modifier.padding(20.dp),
+                        navController = navController,
+                        email = emailState.value,
+                        createdAt = createdAtState.value,
+                        onClick = { navigateToMainApp() }
+                    )
+                }
+            }
+        }
+    }
+
+    private fun navigateToMainApp() {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        startActivity(intent)
+    }
+
+    private fun handleDeepLink(intent: Intent) {
+        if (intent.action == Intent.ACTION_VIEW) {
+            val uri: Uri? = intent.data
+            uri?.let {
+                val tokenHash = it.getQueryParameter("token_hash")
+                val code = it.getQueryParameter("code") ?: ""
+                val actionPath = it.pathSegments.last()
+                if (tokenHash != null) {
+                    when (actionPath) {
+                        "confirm" -> {
+                            viewModel.verifyEmailConfirmation(tokenHash)
+                        }
+                    }
+                } else {
+                    when (actionPath) {
+                        "oauth" -> {
+                            viewModel.verifyGoogleAuth(code = code)
+                        }
+                    }
+                    println("Invalid deep link parameters")
+                }
+            }
+        }
+    }
+}
+

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "665065554481",
+    "project_id": "withsupabase-d0fe6",
+    "storage_bucket": "withsupabase-d0fe6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:665065554481:android:b36aafaf90b292e8128b10",
+        "android_client_info": {
+          "package_name": "com.lj.crud_supabase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBA-J_GaqYf3dR0twg9vG9LsN6555S6YQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
