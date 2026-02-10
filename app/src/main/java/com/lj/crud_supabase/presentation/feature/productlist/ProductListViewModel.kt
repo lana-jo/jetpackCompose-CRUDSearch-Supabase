@@ -2,28 +2,35 @@ package com.lj.crud_supabase.presentation.feature.productlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lj.crud_supabase.data.dto.Product
-import com.lj.crud_supabase.data.dto.ProductDto
-import com.lj.crud_supabase.data.repository.product.ProductRepository
+import com.lj.crud_supabase.data.repository.AuthenticationRepository
+import com.lj.crud_supabase.domain.model.AuthState
+import com.lj.crud_supabase.domain.model.Product
+import com.lj.crud_supabase.domain.usecase.DeleteProductUseCase
+import com.lj.crud_supabase.domain.usecase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class ProductListViewModel @Inject constructor(
-    private val productRepository: ProductRepository,
-) : ViewModel() {
+    private val getProductsUseCase: GetProductsUseCase,
+    private val deleteProductUseCase: DeleteProductUseCase,
+    private val authRepository: AuthenticationRepository
+) : ViewModel(), ProductListContract {
 
-  /*  val authState: StateFlow<AuthState> = authRepository.authState.stateIn(
+    val authState: StateFlow<AuthState> = authRepository.authState.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = AuthState.Initializing
-    )*/
+    )
 
     private val _productList = MutableStateFlow<List<Product>?>(listOf())
-    val productList: Flow<List<Product>?> = _productList
+    override val productList: Flow<List<Product>?> = _productList
 
 
     private val _isLoading = MutableStateFlow(false)
@@ -33,32 +40,36 @@ class ProductListViewModel @Inject constructor(
         getProducts()
     }
 
-    fun getProducts() {
+    override fun getProducts() {
         viewModelScope.launch {
-            val products = productRepository.getProducts()
-            _productList.emit(products?.map { it -> it.asDomainModel() })
+            when (val result = getProductsUseCase.execute(input = Unit)) {
+                is GetProductsUseCase.Output.Success -> {
+                    _productList.emit(result.data)
+                }
+
+                is GetProductsUseCase.Output.Failure -> {
+
+                }
+            }
         }
     }
 
-    fun removeItem(product: Product) {
+    override fun removeItem(product: Product) {
         viewModelScope.launch {
             val newList = mutableListOf<Product>().apply { _productList.value?.let { addAll(it) } }
             newList.remove(product)
             _productList.emit(newList.toList())
+
             // Call api to remove
-            productRepository.deleteProduct(id = product.id!!)
+            deleteProductUseCase.execute(DeleteProductUseCase.Input(productId = product.id))
             // Then fetch again
             getProducts()
         }
     }
 
-    private fun ProductDto.asDomainModel(): Product {
-        return Product(
-            id = this.id,
-            name = this.name,
-            price = this.price,
-            image = this.image
-        )
+    override fun signOut() {
+        viewModelScope.launch {
+            authRepository.signOut()
+        }
     }
-
 }

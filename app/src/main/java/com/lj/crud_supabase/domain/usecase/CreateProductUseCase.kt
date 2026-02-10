@@ -1,6 +1,6 @@
 package com.lj.crud_supabase.domain.usecase
 
-import com.lj.crud_supabase.data.dto.Product
+import com.lj.crud_supabase.domain.model.Product
 
 interface CreateProductUseCase : UseCase<CreateProductUseCase.Input, CreateProductUseCase.Output> {
     class Input(val product: Product)

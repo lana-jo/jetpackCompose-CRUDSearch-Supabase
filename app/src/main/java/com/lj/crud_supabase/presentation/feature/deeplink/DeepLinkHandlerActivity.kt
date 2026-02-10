@@ -19,16 +19,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.lj.crud_supabase.MainActivity
-import com.lj.crud_supabase.presentation.feature.auth.signin.SignInSuccessScreen
 import com.lj.crud_supabase.presentation.feature.deeplink.state.RedirectDestination
-import com.lj.crud_supabase.ui.theme.ManageProductsTheme
+import com.lj.crud_supabase.presentation.feature.signin.SignInSuccessScreen
+import com.lj.crud_supabase.theme.ProductTheme
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.handleDeeplinks
 import javax.inject.Inject
-import kotlin.getValue
 import kotlin.time.ExperimentalTime
-
 
 @AndroidEntryPoint
 class DeepLinkHandlerActivity : ComponentActivity() {
@@ -74,7 +72,7 @@ class DeepLinkHandlerActivity : ComponentActivity() {
                     createdAtState.value = created
                 }
             }
-            ManageProductsTheme {
+            ProductTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

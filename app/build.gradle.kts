@@ -3,8 +3,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.3.0"
     alias(libs.plugins.hilt.android)
+    kotlin("plugin.serialization") version "2.3.0"
     alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.googleServices)
 }
@@ -17,6 +17,9 @@ val properties = Properties().apply {
 
 val baseUrl = properties["BASE_URL"] as String
 val apiKey = properties["API_KEY"] as String
+val supabase_version = "2.0.0"
+val ktor_version = "2.3.2"
+
 android {
     namespace = "com.lj.crud_supabase"
     compileSdk {
@@ -34,16 +37,16 @@ android {
 
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
         buildConfigField("String", "API_KEY", "\"$apiKey\"")
-        /*buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"${properties.getProperty("SUPABASE_PUBLISHABLE_KEY")}\"")
+        buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", "\"${properties.getProperty("SUPABASE_PUBLISHABLE_KEY")}\"")
         buildConfigField("String", "SECRET", "\"${properties.getProperty("SECRET")}\"")
-        buildConfigField("String", "SUPABASE_URL", "\"${properties.getProperty("SUPABASE_URL")}\"")*/
+        buildConfigField("String", "SUPABASE_URL", "\"${properties.getProperty("SUPABASE_URL")}\"")
 
     }
 
 
     defaultConfig {
-       /* buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
-        buildConfigField("String", "API_KEY", "\"$apiKey\"")*/
+       buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -67,15 +70,14 @@ android {
 }
 
 dependencies {
-
-    //supabase
+//supabase
     implementation(platform(libs.supabase.bom))
     implementation(libs.postgrest.kt)
     implementation(libs.auth.kt)
     implementation(libs.realtime.kt)
     implementation(libs.storage.kt)
 
-    // Hilt
+// Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.datastore.core)
     implementation(libs.ui)
@@ -85,48 +87,44 @@ dependencies {
     implementation(libs.androidx.camera.core)
     ksp(libs.hilt.android.compiler)
 
-    // Hilt Compose
+// Hilt Compose
     implementation(libs.androidx.hilt.navigation.compose)
 //    annotationProcessor (libs.hilt.compiler)
 
 
 
-    // Logging
+// Logging
     implementation(libs.timber)
 
-    // Coil
+// Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
 
-    // Data Store
+// Data Store
     implementation(libs.androidx.datastore.preferences)
 
-    // Firebase
+// Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.analytics)
 
-    // Extended icon
+// Extended icon
     implementation(libs.androidx.material.icons.extended)
 
-    // kotlin serialization
+// kotlin serialization
     implementation(libs.kotlinx.serialization.json)
 
 //    ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.utils)
-    /*implementation("io.github.jan-tennert.supabase:postgrest-kt:${supabase_version}")
-    implementation("io.github.jan-tennert.supabase:storage-kt:${supabase_version}")
-    implementation("io.github.jan-tennert.supabase:auth-kt:${supabase_version}")
-    implementation("io.ktor:ktor-client-android:${ktor_version}")*/
 
-    /*implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)*/
+    implementation(libs.androidx.ui.tooling.preview)
 
-    /*implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -140,7 +138,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)*/
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -153,10 +151,63 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
     implementation (libs.androidx.compose.material)
 
     implementation(libs.accompanist.swiperefresh)
+
+    /*implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // kotlin serialization
+    implementation(libs.kotlinx.serialization.json)
+
+    // supabase
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.ktor.client.android)
+    implementation(libs.postgrest.kt)
+    implementation(libs.auth.kt)
+    implementation(libs.realtime.kt)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    // Hilt Compose
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Extended icon
+    implementation(libs.androidx.material.icons.extended)
+
+    // Logging
+    implementation(libs.timber)
+
+    // Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    // Data Store
+    implementation(libs.androidx.datastore.preferences)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)*/
+
+
+
 }
