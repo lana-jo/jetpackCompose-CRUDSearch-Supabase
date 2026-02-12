@@ -10,13 +10,34 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Modul Hilt untuk menyediakan implementasi repositori.
+ *
+ * Modul ini bertanggung jawab untuk mengikat antarmuka repositori ke implementasi konkretnya,
+ * memungkinkan injeksi dependensi di seluruh aplikasi.
+ */
 @InstallIn(SingletonComponent::class)
 @Module
 abstract class RepositoryModule {
 
+    /**
+     * Mengikat [ProductRepositoryImpl] ke antarmuka [ProductRepository].
+     *
+     * @param impl Implementasi dari [ProductRepository].
+     * @return Sebuah instance dari [ProductRepository].
+     */
     @Binds
     abstract fun bindProductRepository(impl: ProductRepositoryImpl): ProductRepository
 
+    /**
+     * Mengikat [AuthenticationRepositoryImpl] ke antarmuka [AuthenticationRepository].
+     *
+     * Anotasi `@Singleton` memastikan bahwa hanya ada satu instance dari [AuthenticationRepository]
+     * yang dibuat dan digunakan di seluruh aplikasi.
+     *
+     * @param impl Implementasi dari [AuthenticationRepository].
+     * @return Instance tunggal dari [AuthenticationRepository].
+     */
     @Binds
     @Singleton
     abstract fun bindAuthenticateRepository(impl: AuthenticationRepositoryImpl): AuthenticationRepository

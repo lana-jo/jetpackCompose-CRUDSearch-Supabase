@@ -13,6 +13,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel untuk layar Detail Produk.
+ *
+ * ViewModel ini bertanggung jawab untuk mengambil, memperbarui, dan mengelola status UI untuk detail produk.
+ *
+ * @property getProductDetailsUseCase Kasus penggunaan untuk mengambil detail produk.
+ * @property updateProductUseCase Kasus penggunaan untuk memperbarui produk.
+ * @property savedStateHandle Handel ke status tersimpan, digunakan untuk mengambil ID produk dari argumen navigasi.
+ */
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
     private val getProductDetailsUseCase: GetProductDetailsUseCase,
@@ -39,6 +48,11 @@ class ProductDetailsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Mengambil detail produk berdasarkan ID produk yang diberikan.
+     *
+     * @param productId ID produk yang akan diambil.
+     */
     private fun getProduct(productId: String) {
         viewModelScope.launch {
             val result = getProductDetailsUseCase.execute(
@@ -60,14 +74,29 @@ class ProductDetailsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Dipanggil saat nama produk diubah di UI.
+     *
+     * @param name Nama produk yang baru.
+     */
     fun onNameChange(name: String) {
         _name.value = name
     }
 
+    /**
+     * Dipanggil saat harga produk diubah di UI.
+     *
+     * @param price Harga produk yang baru.
+     */
     fun onPriceChange(price: Double) {
         _price.value = price
     }
 
+    /**
+     * Menyimpan perubahan pada produk, termasuk gambar yang diperbarui.
+     *
+     * @param image Data byte dari gambar baru.
+     */
     override fun onSaveProduct(image: ByteArray) {
         viewModelScope.launch {
             updateProductUseCase.execute(
@@ -82,6 +111,11 @@ class ProductDetailsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Dipanggil saat URL gambar diubah.
+     *
+     * @param url URL gambar yang baru.
+     */
     override fun onImageChange(url: String) {
         _imageUrl.value = url
     }

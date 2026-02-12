@@ -6,8 +6,21 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
+/**
+ * Mendefinisikan set gaya tipografi Material untuk digunakan dalam aplikasi.
+ * Gaya-gaya ini dapat diterapkan ke composable teks untuk memastikan konsistensi
+ * di seluruh UI aplikasi.
+ *
+ * Contoh:
+ * ```
+ * Text("Hello World", style = MaterialTheme.typography.bodyLarge)
+ * ```
+ */
 val Typography = Typography(
+    /**
+     * Gaya default untuk teks isi yang besar.
+     * Digunakan untuk teks yang lebih panjang dan blok teks.
+     */
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
@@ -15,7 +28,7 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     )
-    /* Other default text styles to override
+    /* Gaya teks default lain yang dapat diganti
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,

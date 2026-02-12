@@ -5,19 +5,19 @@ import com.lj.crud_supabase.domain.usecase.UpdateProductUseCase
 import javax.inject.Inject
 
 /**
- * Implementation of [UpdateProductUseCase] that updates a product.
+ * Implementasi dari [UpdateProductUseCase] yang memperbarui sebuah produk.
  *
- * @property productRepository The repository for managing products.
+ * @property productRepository Repositori untuk mengelola produk.
  */
 class UpdateProductUseCaseImpl @Inject constructor(
     private val productRepository: ProductRepository
 ) : UpdateProductUseCase {
 
     /**
-     * Executes the use case to update a product.
+     * Menjalankan kasus penggunaan untuk memperbarui sebuah produk.
      *
-     * @param input The input for the use case, containing the product details to be updated.
-     * @return [UpdateProductUseCase.Output.Success] if the product was updated successfully.
+     * @param input Masukan untuk kasus penggunaan, berisi detail produk yang akan diperbarui.
+     * @return [UpdateProductUseCase.Output.Success] jika produk berhasil diperbarui.
      */
     override suspend fun execute(input: UpdateProductUseCase.Input): UpdateProductUseCase.Output {
         productRepository.updateProduct(

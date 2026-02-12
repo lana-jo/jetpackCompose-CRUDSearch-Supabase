@@ -159,55 +159,5 @@ dependencies {
 
     implementation(libs.accompanist.swiperefresh)
 
-    /*implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-    // kotlin serialization
-    implementation(libs.kotlinx.serialization.json)
-
-    // supabase
-    implementation(platform(libs.supabase.bom))
-    implementation(libs.ktor.client.android)
-    implementation(libs.postgrest.kt)
-    implementation(libs.auth.kt)
-    implementation(libs.realtime.kt)
-
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.android.compiler)
-    // Hilt Compose
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    // Extended icon
-    implementation(libs.androidx.material.icons.extended)
-
-    // Logging
-    implementation(libs.timber)
-
-    // Coil
-    implementation(libs.coil.compose)
-    implementation(libs.coil.network.okhttp)
-
-    // Data Store
-    implementation(libs.androidx.datastore.preferences)
-
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.messaging)*/
-
-
 
 }

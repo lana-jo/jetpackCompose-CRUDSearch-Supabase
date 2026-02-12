@@ -17,16 +17,34 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.jan.supabase.SupabaseClient
 import javax.inject.Inject
 
+/**
+ * Aktivitas utama aplikasi.
+ *
+ * Aktivitas ini adalah titik masuk aplikasi dan menjadi host bagi UI Jetpack Compose.
+ * Aktivitas ini menyiapkan grafik navigasi dan tema untuk aplikasi.
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    /**
+     * Klien Supabase untuk berinteraksi dengan backend Supabase.
+     */
     @Inject
     lateinit var supabaseClient: SupabaseClient
 
+    /**
+     * Dipanggil saat aktivitas pertama kali dibuat.
+     *
+     * Di sinilah Anda harus melakukan semua penyiapan statis normal Anda: membuat tampilan, mengikat data ke daftar, dll.
+     * Metode ini juga memberi Anda Bundle yang berisi status aktivitas yang sebelumnya dibekukan, jika ada.
+     *
+     * @param savedInstanceState Jika aktivitas diinisialisasi ulang setelah sebelumnya dimatikan maka Bundle ini berisi data yang terakhir diberikan dalam onSaveInstanceState(Bundle). Catatan: Jika tidak, nilainya null.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ProductTheme {
-                // A surface container using the 'background' color from the theme
+                // Wadah permukaan yang menggunakan warna 'latar belakang' dari tema
                 val navController = rememberNavController()
                 val currentBackStack by navController.currentBackStackEntryAsState()
                 val currentDestination = currentBackStack?.destination

@@ -7,19 +7,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
- * Implementation of [SignInWithGoogleUseCase] for signing in with Google.
+ * Implementasi dari [SignInWithGoogleUseCase] untuk masuk dengan Google.
  *
- * @property authenticationRepository The repository for handling authentication.
+ * @property authenticationRepository Repositori untuk menangani otentikasi.
  */
 class SignInWithGoogleUseCaseImpl @Inject constructor(
     private val authenticationRepository: AuthenticationRepository,
 ): SignInWithGoogleUseCase {
 
     /**
-     * Executes the Google sign-in process.
+     * Menjalankan proses masuk Google.
      *
-     * @param input The input for the use case.
-     * @return A [SignInWithGoogleUseCase.Output] object.
+     * @param input Masukan untuk kasus penggunaan.
+     * @return Sebuah objek [SignInWithGoogleUseCase.Output].
      */
     override suspend fun execute(input: SignInWithGoogleUseCase.Input): SignInWithGoogleUseCase.Output {
         return withContext(Dispatchers.IO) {

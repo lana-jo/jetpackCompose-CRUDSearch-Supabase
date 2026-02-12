@@ -8,7 +8,7 @@ hiltCompiler = "2.59.1"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-ktorClientAndroidVersion = "2.3.2"
+ktorClientAndroidVersion = "3.4.0"
 ktorClientCore = "3.4.0"
 ktorUtils = "3.4.0"
 lifecycleRuntimeKtx = "2.10.0"
@@ -16,19 +16,19 @@ activityCompose = "1.12.3"
 kotlin = "2.3.10"
 composeBom = "2026.01.01"
 
-postgrestKt = "2.0.0"
+postgrestKt = "3.3.0"
 supabase = "3.3.0"
 hiltAndroid = "2.59"
 hiltNavigationCompose = "1.3.0"
 devtoolsKsp = "2.0.20-1.0.25"
 timber = "5.0.1"
 datastorePreferences = "1.2.0"
-googleServices = "4.4.2"
+googleServices = "4.4.4"
 kotlinxSerializationJson = "1.10.0"
 ktorClientAndroid = "3.4.0"
-firebaseBom = "33.12.0"
-coilCompose = "3.1.0"
-coilNetworkOkhttp = "3.1.0"
+firebaseBom = "34.9.0"
+coilCompose = "3.3.0"
+coilNetworkOkhttp = "3.3.0"
 datastoreCore = "1.2.0"
 ui = "1.10.2"
 material3 = "1.4.0"
@@ -107,13 +107,5 @@ plugin-hilt = { id = "dagger.hilt.android.plugin", version.ref = "hiltAndroid" }
 kapt-kotlin = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 plugin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
-#
-#id 'com.android.application'
-#id 'org.jetbrains.kotlin.android'
-#id 'com.google.dagger.hilt.android'
-#id 'dagger.hilt.android.plugin'
-#id 'org.jetbrains.kotlin.plugin.serialization' version '2.1.20'
-#id 'org.jetbrains.kotlin.plugin.compose' version '2.2.0'
-#id 'org.jetbrains.kotlin.kapt'
 
 
