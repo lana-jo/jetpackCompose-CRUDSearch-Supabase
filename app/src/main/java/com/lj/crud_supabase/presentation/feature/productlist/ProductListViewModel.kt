@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,9 +32,28 @@ class ProductListViewModel @Inject constructor(
         initialValue = AuthState.Initializing
     )
 
-    private val _productList = MutableStateFlow<List<Product>?>(listOf())
-    override val productList: Flow<List<Product>?> = _productList
+    private val _allProducts = MutableStateFlow<List<Product>>(emptyList())
 
+    private val _searchQuery = MutableStateFlow("")
+    override val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    @OptIn(kotlinx.coroutines.FlowPreview::class)
+    override val productList: StateFlow<List<Product>> = searchQuery
+        .debounce(500L)
+        .combine(_allProducts) { query, products ->
+            if (query.isBlank()) {
+                products
+            } else {
+                products.filter {
+                    it.name.contains(query, ignoreCase = true)
+                }
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = _allProducts.value
+        )
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: Flow<Boolean> = _isLoading
@@ -42,28 +64,30 @@ class ProductListViewModel @Inject constructor(
 
     override fun getProducts() {
         viewModelScope.launch {
+            _isLoading.value = true
             when (val result = getProductsUseCase.execute(input = Unit)) {
                 is GetProductsUseCase.Output.Success -> {
-                    _productList.emit(result.data)
+                    _allProducts.value = result.data
                 }
 
                 is GetProductsUseCase.Output.Failure -> {
-
+                    // Handle failure
                 }
             }
+            _isLoading.value = false
         }
     }
 
     override fun removeItem(product: Product) {
         viewModelScope.launch {
-            val newList = mutableListOf<Product>().apply { _productList.value?.let { addAll(it) } }
-            newList.remove(product)
-            _productList.emit(newList.toList())
+            // Optimistically update the UI
+            val newList = _allProducts.value.toMutableList().apply {
+                remove(product)
+            }
+            _allProducts.value = newList
 
             // Call api to remove
             deleteProductUseCase.execute(DeleteProductUseCase.Input(productId = product.id))
-            // Then fetch again
-            getProducts()
         }
     }
 
@@ -71,5 +95,9 @@ class ProductListViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.signOut()
         }
+    }
+
+    override fun onSearchQueryChange(query: String) {
+        _searchQuery.value = query
     }
 }

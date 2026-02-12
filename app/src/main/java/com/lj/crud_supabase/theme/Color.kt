@@ -2,16 +2,65 @@ package com.lj.crud_supabase.theme
 
 import androidx.compose.ui.graphics.Color
 
-/**
- * Warna-warna ini mewakili palet untuk tema terang.
- */
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Light Theme Colors
+val md_theme_light_primary = Color(0xFFFFB74D) // Light Orange
+val md_theme_light_onPrimary = Color(0xFFFFFFFF)
+val md_theme_light_primaryContainer = Color(0xFFFFDDBE)
+val md_theme_light_onPrimaryContainer = Color(0xFF2C1A00)
+val md_theme_light_secondary = Color(0xFF755C43)
+val md_theme_light_onSecondary = Color(0xFFFFFFFF)
+val md_theme_light_secondaryContainer = Color(0xFFFFDDBE)
+val md_theme_light_onSecondaryContainer = Color(0xFF2C1A00)
+val md_theme_light_tertiary = Color(0xFF5A633A)
+val md_theme_light_onTertiary = Color(0xFFFFFFFF)
+val md_theme_light_tertiaryContainer = Color(0xFFDEE9B4)
+val md_theme_light_onTertiaryContainer = Color(0xFF181E00)
+val md_theme_light_error = Color(0xFFBA1A1A)
+val md_theme_light_errorContainer = Color(0xFFFFDAD6)
+val md_theme_light_onError = Color(0xFFFFFFFF)
+val md_theme_light_onErrorContainer = Color(0xFF410002)
+val md_theme_light_background = Color(0xFFFFF8F4)
+val md_theme_light_onBackground = Color(0xFF201A1A)
+val md_theme_light_surface = Color(0xFFFFF8F4)
+val md_theme_light_onSurface = Color(0xFF201A1A)
+val md_theme_light_surfaceVariant = Color(0xFFF0E0D0)
+val md_theme_light_onSurfaceVariant = Color(0xFF4F4539)
+val md_theme_light_outline = Color(0xFF817567)
+val md_theme_light_inverseOnSurface = Color(0xFFF9EEE7)
+val md_theme_light_inverseSurface = Color(0xFF352F29)
+val md_theme_light_inversePrimary = Color(0xFFFFB74D)
+val md_theme_light_shadow = Color(0xFF000000)
+val md_theme_light_surfaceTint = Color(0xFF815600)
 
-/**
- * Warna-warna ini mewakili palet untuk tema gelap.
- */
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Dark Theme Colors
+val md_theme_dark_primary = Color(0xFFFFA500) // Orange
+val md_theme_dark_onPrimary = Color(0xFF452B00)
+val md_theme_dark_primaryContainer = Color(0xFF633F00)
+val md_theme_dark_onPrimaryContainer = Color(0xFFFFDDBE)
+val md_theme_dark_secondary = Color(0xFFE3C1A4)
+val md_theme_dark_onSecondary = Color(0xFF422E19)
+val md_theme_dark_secondaryContainer = Color(0xFF5A442E)
+val md_theme_dark_onSecondaryContainer = Color(0xFFFFDDBE)
+val md_theme_dark_tertiary = Color(0xFFC2CD9A)
+val md_theme_dark_onTertiary = Color(0xFF2D340F)
+val md_theme_dark_tertiaryContainer = Color(0xFF434B24)
+val md_theme_dark_onTertiaryContainer = Color(0xFFDEE9B4)
+val md_theme_dark_error = Color(0xFFFFB4AB)
+val md_theme_dark_errorContainer = Color(0xFF93000A)
+val md_theme_dark_onError = Color(0xFF690005)
+val md_theme_dark_onErrorContainer = Color(0xFFFFDAD6)
+val md_theme_dark_background = Color(0xFF1A120B)
+val md_theme_dark_onBackground = Color(0xFFEDE0D9)
+val md_theme_dark_surface = Color(0xFF1A120B)
+val md_theme_dark_onSurface = Color(0xFFEDE0D9)
+val md_theme_dark_surfaceVariant = Color(0xFF4F4539)
+val md_theme_dark_onSurfaceVariant = Color(0xFFD3C4B4)
+val md_theme_dark_outline = Color(0xFF9C8F80)
+val md_theme_dark_inverseOnSurface = Color(0xFF1A120B)
+val md_theme_dark_inverseSurface = Color(0xFFEDE0D9)
+val md_theme_dark_inversePrimary = Color(0xFF815600)
+val md_theme_dark_shadow = Color(0xFF000000)
+val md_theme_dark_surfaceTint = Color(0xFFFFB74D)
+
+
+val seed = Color(0xFFFFB74D)

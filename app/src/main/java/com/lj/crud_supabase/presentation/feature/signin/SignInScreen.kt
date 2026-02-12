@@ -1,22 +1,19 @@
 package com.lj.crud_supabase.presentation.feature.signin
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -30,107 +27,85 @@ fun SignInScreen(
     navController: NavController,
     viewModel: SignInViewModel = hiltViewModel()
 ) {
-
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
-        snackbarHost = { androidx.compose.material.SnackbarHost(snackBarHostState) },
         topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.navigateUp()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                },
-                backgroundColor = MaterialTheme.colorScheme.primary,
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Login",
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        text = "Sign In",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                     )
                 },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                )
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { paddingValues ->
         Column(
             modifier = modifier
                 .padding(paddingValues)
-                .padding(20.dp)
+                .padding(16.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            val email = viewModel.email.collectAsState(initial = "")
-            val password = viewModel.password.collectAsState()
-            androidx.compose.material.OutlinedTextField(
-                label = {
-                    Text(
-                        text = "Email",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                },
-                maxLines = 1,
-                shape = RoundedCornerShape(32),
-                modifier = modifier.fillMaxWidth(),
-                value = email.value,
-                onValueChange = {
-                    viewModel.onEmailChange(it)
-                },
-            )
-            androidx.compose.material.OutlinedTextField(
-                label = {
-                    Text(
-                        text = "Password",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                },
-                maxLines = 1,
-                shape = RoundedCornerShape(32),
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp),
-                value = password.value,
-                onValueChange = {
-                    viewModel.onPasswordChange(it)
-                },
-            )
+            val email by viewModel.email.collectAsState(initial = "")
+            val password by viewModel.password.collectAsState()
             val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
-            Button(modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp),
-                onClick = {
-                    localSoftwareKeyboardController?.hide()
-                    viewModel.onGoogleSignIn()
-                }) {
-                Text("Sign in with Google")
-            }
 
-            Button(modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp),
+            OutlinedTextField(
+                label = { Text("Email") },
+                modifier = Modifier.fillMaxWidth(),
+                value = email,
+                onValueChange = { viewModel.onEmailChange(it) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                shape = RoundedCornerShape(16.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                label = { Text("Password") },
+                modifier = Modifier.fillMaxWidth(),
+                value = password,
+                onValueChange = { viewModel.onPasswordChange(it) },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                shape = RoundedCornerShape(16.dp)
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Button(
+                modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     localSoftwareKeyboardController?.hide()
                     viewModel.onSignIn()
                     coroutineScope.launch {
-                        snackBarHostState.showSnackbar(
-                            message = "Sign in successfully !",
-                            duration = SnackbarDuration.Long
-                        )
+                        snackBarHostState.showSnackbar("Sign in successfully!")
+                        navController.navigateUp()
                     }
-                }) {
-                Text("Sign in")
+                },
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Sign in", modifier = Modifier.padding(8.dp))
             }
-            OutlinedButton(modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp), onClick = {
-                navController.navigate(SignUpDestination.route)
-            }) {
-                Text("Sign up")
+            TextButton(onClick = { /* Handle Google Sign-In */ }) {
+                Text("Or sign in with Google")
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { navController.navigate(SignUpDestination.route) },
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Don't have an account? Sign up", modifier = Modifier.padding(8.dp))
             }
         }
     }

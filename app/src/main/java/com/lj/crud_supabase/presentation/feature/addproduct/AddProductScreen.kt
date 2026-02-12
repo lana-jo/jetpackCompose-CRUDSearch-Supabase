@@ -4,20 +4,13 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,34 +29,29 @@ fun AddProductScreen(
     navController: NavController,
     viewModel: AddProductViewModel = hiltViewModel(),
 ) {
+    val navigateAddProductSuccess by viewModel.navigateAddProductSuccess.collectAsState(initial = null)
+    val isLoading by viewModel.isLoading.collectAsState(initial = false)
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.navigateUp()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                },
+            CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = stringResource(R.string.add_product_text_screen_title),
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                     )
                 },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                )
             )
         }
     ) { padding ->
-        val navigateAddProductSuccess =
-            viewModel.navigateAddProductSuccess.collectAsState(initial = null).value
-        val isLoading =
-            viewModel.isLoading.collectAsState(initial = null).value
-
         Box(
             modifier = modifier
                 .padding(padding)
@@ -71,121 +59,85 @@ fun AddProductScreen(
                 .fillMaxSize()
         ) {
             if (isLoading == true) {
-                LoadingScreen(message = "Adding Product",
-                    onCancelSelected = {
-                        navController.navigateUp()
-                    })
+                LoadingScreen(message = "Adding Product", onCancelSelected = { navController.navigateUp() })
             } else {
-                when (navigateAddProductSuccess) {
+                when (val result = navigateAddProductSuccess) {
                     null -> {
-                        Column(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            val name = rememberSaveable { mutableStateOf("") }
-                            val price = rememberSaveable { mutableStateOf("") }
-                            OutlinedTextField(
-                                label = {
-                                    Text(
-                                        text = "Product name",
-                                        color = MaterialTheme.colorScheme.primary,
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                },
-                                maxLines = 2,
-                                shape = RoundedCornerShape(32),
-                                modifier = Modifier.fillMaxWidth(),
-                                value = name.value,
-                                onValueChange = {
-                                    name.value = it
-                                },
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            OutlinedTextField(
-                                label = {
-                                    Text(
-                                        text = "Product price",
-                                        color = MaterialTheme.colorScheme.primary,
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                },
-                                maxLines = 2,
-                                shape = RoundedCornerShape(32),
-                                modifier = Modifier.fillMaxWidth(),
-                                value = price.value,
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                onValueChange = {
-                                    price.value = it
-                                },
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Spacer(modifier = Modifier.weight(1f))
-                            OutlinedButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = {
-                                    navController.navigateUp()
-                                }) {
-                                Text(text = "Cancel")
-                            }
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Button(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = {
-                                    viewModel.onCreateProduct(
-                                        name = name.value,
-                                        price = if (price.value.isEmpty()) 0.0 else price.value.trim()
-                                            .toDouble(),
-                                    )
-                                }) {
-                                Text(text = "Add Product")
-                            }
-                        }
+                        AddProductForm(navController = navController, viewModel = viewModel)
                     }
                     is CreateProductUseCase.Output.Success -> {
                         SuccessScreen(
                             message = "Product added successfully",
-                            onMoreAction = {
-                                viewModel.onAddMoreProductSelected()
-                            },
-                            onNavigateBack = {
-                                navController.navigateUp()
-                            })
-                    }
-                    is CreateProductUseCase.Output.Failure -> {
-                        val resonMessage = rememberSaveable {
-                            mutableStateOf(handleError(navigateAddProductSuccess))
-                        }
-                        FailScreen(
-                            message = "Fail to Add Product",
-                            reason = resonMessage.value,
-                            onRetrySelected = {
-                                viewModel.onRetrySelected()
-                            },
+                            onMoreAction = { viewModel.onAddMoreProductSelected() },
                             onNavigateBack = { navController.navigateUp() }
                         )
                     }
-
+                    is CreateProductUseCase.Output.Failure -> {
+                        FailScreen(
+                            message = "Failed to Add Product",
+                            reason = handleError(result),
+                            onRetrySelected = { viewModel.onRetrySelected() },
+                            onNavigateBack = { navController.navigateUp() }
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-private fun handleError(failResult: CreateProductUseCase.Output.Failure): String {
+@Composable
+fun AddProductForm(navController: NavController, viewModel: AddProductViewModel) {
+    var name by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf("") }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        OutlinedTextField(
+            label = { Text("Product name") },
+            modifier = Modifier.fillMaxWidth(),
+            value = name,
+            onValueChange = { name = it },
+            shape = RoundedCornerShape(16.dp)
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+        OutlinedTextField(
+            label = { Text("Product price") },
+            modifier = Modifier.fillMaxWidth(),
+            value = price,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            onValueChange = { price = it },
+            shape = RoundedCornerShape(16.dp)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = {
+                viewModel.onCreateProduct(
+                    name = name,
+                    price = price.toDoubleOrNull() ?: 0.0,
+                )
+            },
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text(text = "Add Product", modifier = Modifier.padding(8.dp))
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedButton(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { navController.navigateUp() },
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text(text = "Cancel", modifier = Modifier.padding(8.dp))
+        }
+    }
+}
+
+private fun handleError(failResult: CreateProductUseCase.Output.Failure?): String {
     return when (failResult) {
-        is CreateProductUseCase.Output.Failure.InternalError -> {
-            "Internal Error"
-        }
-        is CreateProductUseCase.Output.Failure.BadRequest -> {
-            "Bad request"
-        }
-        is CreateProductUseCase.Output.Failure.Conflict -> {
-            "Conflict"
-        }
-        is CreateProductUseCase.Output.Failure.Unauthorized -> {
-            "Unauthorized"
-        }
-        else -> {
-            "Internal Error"
-        }
+        is CreateProductUseCase.Output.Failure.InternalError -> "Internal Error"
+        is CreateProductUseCase.Output.Failure.BadRequest -> "Bad request"
+        is CreateProductUseCase.Output.Failure.Conflict -> "Conflict"
+        is CreateProductUseCase.Output.Failure.Unauthorized -> "Unauthorized"
+        else -> "An unexpected error occurred"
     }
 }

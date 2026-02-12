@@ -1,16 +1,15 @@
 package com.lj.crud_supabase.presentation.feature.addproduct.composables
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -21,31 +20,52 @@ fun FailScreen(
     onRetrySelected: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
-
-    Column(
-        modifier = modifier
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(imageVector = Icons.Filled.Close, contentDescription = null,
-            modifier = modifier.size(128.dp),
-            tint = Color.Red)
-        Text(text = message,
-            style = MaterialTheme.typography.titleLarge)
-        Spacer(modifier = modifier.height(24.dp))
-        Text(text = reason)
-        Spacer(modifier = modifier.height(24.dp))
-        OutlinedButton(
-            modifier = modifier
-                .fillMaxWidth(),
-            onClick = onRetrySelected) {
-            Text(text = "Retry")
-        }
-        Spacer(modifier = modifier.height(12.dp))
-        OutlinedButton(
-            modifier = modifier
-                .fillMaxWidth(),
-            onClick = onNavigateBack) {
-            Text(text = "Cancel")
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = null,
+                modifier = Modifier.size(128.dp),
+                tint = MaterialTheme.colorScheme.error
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = message,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = reason,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onRetrySelected,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Retry", modifier = Modifier.padding(8.dp))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onNavigateBack,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text("Cancel", modifier = Modifier.padding(8.dp))
+            }
         }
     }
 }

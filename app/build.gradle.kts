@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.room.common.jvm)
     ksp(libs.hilt.android.compiler)
 
 // Hilt Compose
