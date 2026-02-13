@@ -43,7 +43,6 @@ fun ProductListItem(
                 modifier = Modifier
                     .padding(16.dp, 8.dp)
                     .size(64.dp)
-
             )
             Text(
                 text = product.name,

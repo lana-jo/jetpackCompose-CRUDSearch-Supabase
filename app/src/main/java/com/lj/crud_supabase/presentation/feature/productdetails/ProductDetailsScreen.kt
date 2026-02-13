@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.rememberAsyncImagePainter
 import com.lj.crud_supabase.R
+import com.lj.crud_supabase.presentation.utils.formatPriceToIDR
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -124,7 +125,7 @@ fun ProductDetailsScreen(
                 shape = RoundedCornerShape(16.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
+            /*OutlinedTextField(
                 label = { Text("Product price") },
                 modifier = Modifier.fillMaxWidth(),
                 value = price.toString(),
@@ -133,6 +134,25 @@ fun ProductDetailsScreen(
                     newValue.toDoubleOrNull()?.let { viewModel.onPriceChange(it) }
                 },
                 shape = RoundedCornerShape(16.dp)
+            )*/
+            OutlinedTextField(
+                label = { Text("Product price (Rp)") },
+                modifier = Modifier.fillMaxWidth(),
+                value = price.toString(),  // Tetap number untuk input
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                onValueChange = { newValue ->
+                    newValue.toDoubleOrNull()?.let { viewModel.onPriceChange(it) }
+                },
+                shape = RoundedCornerShape(16.dp),
+                suffix = {
+                    if (price > 0) {
+                        Text(
+                            text = formatPriceToIDR(price),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.weight(1f))

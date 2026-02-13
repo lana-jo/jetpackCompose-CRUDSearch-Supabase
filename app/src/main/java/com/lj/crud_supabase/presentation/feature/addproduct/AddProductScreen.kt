@@ -20,6 +20,8 @@ import com.lj.crud_supabase.domain.usecase.CreateProductUseCase
 import com.lj.crud_supabase.presentation.feature.addproduct.composables.FailScreen
 import com.lj.crud_supabase.presentation.feature.addproduct.composables.LoadingScreen
 import com.lj.crud_supabase.presentation.feature.addproduct.composables.SuccessScreen
+import com.lj.crud_supabase.presentation.utils.formatPriceIDRSimple
+import com.lj.crud_supabase.presentation.utils.formatPriceToIDR
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,14 +101,23 @@ fun AddProductForm(navController: NavController, viewModel: AddProductViewModel)
             onValueChange = { name = it },
             shape = RoundedCornerShape(16.dp)
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
-            label = { Text("Product price") },
+            label = { Text("Product price (Rp)") },
             modifier = Modifier.fillMaxWidth(),
             value = price,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             onValueChange = { price = it },
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            suffix = {
+                if (price.isNotEmpty() && price.toDoubleOrNull() != null) {
+                    Text(
+                        text = formatPriceToIDR(price.toDouble()),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
         )
         Spacer(modifier = Modifier.weight(1f))
         Button(
