@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,14 +40,17 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun onSignIn() {
+    fun onSignIn(email: String, password: String) {
         viewModelScope.launch {
             val result = signInUseCase.execute(
                 SignInUseCase.Input(
-                    email = _email.value,
-                    password = _password.value
+                    /*email = _email.value,
+                    password = _password.value*/
+                    email= email,
+                    password = password
                 )
             )
+            Timber.d("Result SignInViewModel onSignIn: $result")
             when (result) {
                 is SignInUseCase.Output.Success -> {
                     message.emit("Login successfully !")

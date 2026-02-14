@@ -15,7 +15,7 @@ class ProductRepositoryImpl @Inject constructor(
 ) : ProductRepository {
 
     private companion object {
-        const val BUCKET_NAME = "Product Image"
+        const val BUCKET_NAME = "Product%20Image"
     }
 
     override suspend fun createProduct(product: Product): Boolean {
@@ -85,13 +85,13 @@ class ProductRepositoryImpl @Inject constructor(
             }
 
             val imagePath =
-                storage["Product%20Image"].upload(
+                storage[BUCKET_NAME].upload(
 //                    path = "$imageName.png",
                     path = "$name ++ $imageName.png",
                     data = imageFile,
                 ).path
 
-            val imageUrl = storage.from("Product%20Image").publicUrl(imagePath)
+            val imageUrl = storage.from(BUCKET_NAME).publicUrl(imagePath)
             postgrest["products"].update({
                 set("name", name)
                 set("price", price)

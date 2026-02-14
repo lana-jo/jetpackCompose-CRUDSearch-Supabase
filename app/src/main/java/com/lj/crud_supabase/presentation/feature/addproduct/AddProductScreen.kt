@@ -1,6 +1,8 @@
 package com.lj.crud_supabase.presentation.feature.addproduct
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -9,14 +11,18 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.lj.crud_supabase.R
 import com.lj.crud_supabase.domain.usecase.CreateProductUseCase
+import com.lj.crud_supabase.presentation.component.TrueButtonStyle
+import com.lj.crud_supabase.presentation.component.TrueOutlinedButton
 import com.lj.crud_supabase.presentation.feature.addproduct.composables.FailScreen
 import com.lj.crud_supabase.presentation.feature.addproduct.composables.LoadingScreen
 import com.lj.crud_supabase.presentation.feature.addproduct.composables.SuccessScreen
@@ -31,8 +37,11 @@ fun AddProductScreen(
     navController: NavController,
     viewModel: AddProductViewModel = hiltViewModel(),
 ) {
+
+
     val navigateAddProductSuccess by viewModel.navigateAddProductSuccess.collectAsState(initial = null)
     val isLoading by viewModel.isLoading.collectAsState(initial = false)
+
 
     Scaffold(
         topBar = {
@@ -61,12 +70,15 @@ fun AddProductScreen(
                 .fillMaxSize()
         ) {
             if (isLoading == true) {
-                LoadingScreen(message = "Adding Product", onCancelSelected = { navController.navigateUp() })
+                LoadingScreen(
+                    message = "Adding Product",
+                    onCancelSelected = { navController.navigateUp() })
             } else {
                 when (val result = navigateAddProductSuccess) {
                     null -> {
                         AddProductForm(navController = navController, viewModel = viewModel)
                     }
+
                     is CreateProductUseCase.Output.Success -> {
                         SuccessScreen(
                             message = "Product added successfully",
@@ -74,6 +86,7 @@ fun AddProductScreen(
                             onNavigateBack = { navController.navigateUp() }
                         )
                     }
+
                     is CreateProductUseCase.Output.Failure -> {
                         FailScreen(
                             message = "Failed to Add Product",
@@ -92,6 +105,13 @@ fun AddProductScreen(
 fun AddProductForm(navController: NavController, viewModel: AddProductViewModel) {
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
+    val isNameValid = name.trim().isNotEmpty()
+    val isPriceValid = price.trim().isNotEmpty() && (price.toDoubleOrNull() ?: 0.0) > 0
+    val isFormValid = isNameValid && isPriceValid
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val buttonColor = if (isPressed) Color(0xFF006400) else Color.Green
 
     Column(modifier = Modifier.fillMaxSize()) {
         OutlinedTextField(
@@ -120,19 +140,68 @@ fun AddProductForm(navController: NavController, viewModel: AddProductViewModel)
             }
         )
         Spacer(modifier = Modifier.weight(1f))
+
+        /*TrueButtonStyle(
+            onClick = {
+                if (isFormValid) {
+                    viewModel.onCreateProduct(
+                        name = name.trim(),
+                        price = price.toDoubleOrNull() ?: 0.0
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = isFormValid
+        ) {
+            Text(
+                text = if (isFormValid) "Add Product" else "Fill all fields",
+                modifier = Modifier.padding(8.dp),
+                fontWeight = FontWeight.Bold
+            )
+        }*/
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                viewModel.onCreateProduct(
-                    name = name,
-                    price = price.toDoubleOrNull() ?: 0.0,
-                )
+                if(isFormValid){
+                    viewModel.onCreateProduct(
+                        name = name,
+                        price = price.toDoubleOrNull() ?: 0.0,
+                    )
+                    return@Button
+                }
+                viewModel.onRetrySelected()
             },
+            enabled = isFormValid,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = buttonColor,
+                disabledContainerColor = Color.Black
+            ),
+            interactionSource = interactionSource,
             shape = RoundedCornerShape(16.dp)
         ) {
-            Text(text = "Add Product", modifier = Modifier.padding(8.dp))
+            if (isFormValid) {
+                Text(text = "Add Product", modifier = Modifier.padding(8.dp))
+            } else {
+                Text(text = "Fill all fields", modifier = Modifier.padding(8.dp))
+            }
         }
         Spacer(modifier = Modifier.height(8.dp))
+
+        /*TrueOutlinedButton(
+            onClick = { navController.navigateUp() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+//            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text(
+                text = "Cancel",
+                modifier = Modifier.padding(8.dp),
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+        }*/
+
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = { navController.navigateUp() },

@@ -1,6 +1,7 @@
 package com.lj.crud_supabase.presentation.feature.productlist
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +28,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.room.Delete
+import coil3.compose.rememberAsyncImagePainter
 import com.lj.crud_supabase.R
 import com.lj.crud_supabase.domain.model.AuthState
 import com.lj.crud_supabase.domain.model.Product
@@ -35,7 +37,9 @@ import com.lj.crud_supabase.presentation.navigation.AuthenticationDestination
 import com.lj.crud_supabase.presentation.navigation.ProductDetailsDestination
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.lj.crud_supabase.presentation.utils.formatPriceToIDR
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,9 +106,9 @@ fun ProductListScreen(
                         items(items = productList, key = { it.id }) { product ->
 
                             SwipeToDeleteItem(
-                                product = product,
-                                onDeleteConfirmed = { deletedProduct ->
-                                    viewModel.removeItem(deletedProduct)
+                                item = product,
+                                onDeleteConfirmed = {
+                                    viewModel.removeItem(it)
                                 }
                             ) {
                                 ProductListItem(
@@ -116,12 +120,6 @@ fun ProductListScreen(
                                     }
                                 )
                             }
-
-                            /*ProductListItem(product = product, onClick = {
-                                navController.navigate(
-                                    ProductDetailsDestination.createRouteWithParam(product.id)
-                                )
-                            })*/
                         }
                     }
                 } else {
@@ -213,9 +211,23 @@ fun ProductListItem(product: Product, onClick: () -> Unit) {
                 modifier = Modifier
                     .size(60.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
             ) {
-                // You can load the product image here
+                if (product.image.isNotEmpty()) {
+                    Image(
+                        painter = rememberAsyncImagePainter(product.image),
+                        contentDescription = product.name,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = "No image",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -223,7 +235,7 @@ fun ProductListItem(product: Product, onClick: () -> Unit) {
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    text = "$${product.price}",
+                    text = formatPriceToIDR(product.price),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -231,19 +243,19 @@ fun ProductListItem(product: Product, onClick: () -> Unit) {
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwipeToDeleteItem(
-    product: Product,
+    item: Product,
     onDeleteConfirmed: (Product) -> Unit,
     content: @Composable () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
 
     val dismissState = rememberSwipeToDismissBoxState(
-        confirmValueChange = { value ->
-            if (value == SwipeToDismissBoxValue.EndToStart) {
+        confirmValueChange = { dismissValue ->
+            if (dismissValue == SwipeToDismissBoxValue.EndToStart) {
                 showDialog = true
                 false
             } else {
@@ -261,7 +273,7 @@ fun SwipeToDeleteItem(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.error)
-                    .padding(horizontal = 24.dp),
+                    .padding(horizontal = 20.dp),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
@@ -275,29 +287,29 @@ fun SwipeToDeleteItem(
     )
 
     if (showDialog) {
+        val scope = rememberCoroutineScope()
         AlertDialog(
             onDismissRequest = {
                 showDialog = false
-                scope.launch {
-                    dismissState.reset()
-                }
+                scope.launch { dismissState.reset() }
             },
             icon = {
-                Icon(Icons.Default.Warning, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = null
+                )
             },
-            title = { Text("Delete Product?") },
-            text = {
-                Text("Are you sure you want to delete \"${product.name}\"?")
-            },
+            title = { Text("Hapus Item?") },
+            text = { Text("Apakah kamu yakin ingin menghapus \"${item.name}\"?") },
             confirmButton = {
                 TextButton(
                     onClick = {
                         showDialog = false
-                        onDeleteConfirmed(product)
+                        onDeleteConfirmed(item)
                     }
                 ) {
                     Text(
-                        "Delete",
+                        "Hapus",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -306,12 +318,10 @@ fun SwipeToDeleteItem(
                 TextButton(
                     onClick = {
                         showDialog = false
-                        scope.launch {
-                            dismissState.reset()
-                        }
+                        scope.launch { dismissState.reset() }
                     }
                 ) {
-                    Text("Cancel")
+                    Text("Batal")
                 }
             }
         )

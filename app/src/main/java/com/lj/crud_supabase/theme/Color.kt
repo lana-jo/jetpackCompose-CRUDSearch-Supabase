@@ -31,6 +31,8 @@ val md_theme_light_inverseSurface = Color(0xFF352F29)
 val md_theme_light_inversePrimary = Color(0xFFFFB74D)
 val md_theme_light_shadow = Color(0xFF000000)
 val md_theme_light_surfaceTint = Color(0xFF815600)
+val md_theme_light_done = Color(0xFF7DE011)
+
 
 // Dark Theme Colors
 val md_theme_dark_primary = Color(0xFFFFA500) // Orange
@@ -61,6 +63,8 @@ val md_theme_dark_inverseSurface = Color(0xFFEDE0D9)
 val md_theme_dark_inversePrimary = Color(0xFF815600)
 val md_theme_dark_shadow = Color(0xFF000000)
 val md_theme_dark_surfaceTint = Color(0xFFFFB74D)
+
+val md_theme_dark_done = Color(0xFF7DE011)
 
 
 val seed = Color(0xFFFFB74D)

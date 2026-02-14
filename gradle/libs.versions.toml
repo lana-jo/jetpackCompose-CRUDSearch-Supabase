@@ -36,6 +36,7 @@ lifecycleViewmodelKtx = "2.10.0"
 runtime = "1.10.2"
 cameraCore = "1.5.3"
 roomCommonJvm = "2.8.4"
+foundation = "1.10.2"
 
 
 
@@ -96,6 +97,7 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "cameraCore" }
 androidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 
 [plugins]

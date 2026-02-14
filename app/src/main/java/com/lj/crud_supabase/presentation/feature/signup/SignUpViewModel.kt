@@ -31,7 +31,7 @@ class SignUpViewModel @Inject constructor(
         _password.value = password
     }
 
-    fun onSignUp() {
+    fun onSignUp(email: String, password: String) {
         viewModelScope.launch {
             val result = signUpUseCase.execute(
                 SignUpUseCase.Input(

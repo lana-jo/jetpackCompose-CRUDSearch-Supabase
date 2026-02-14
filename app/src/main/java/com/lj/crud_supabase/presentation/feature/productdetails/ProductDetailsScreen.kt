@@ -7,6 +7,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,9 +18,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -30,6 +34,7 @@ import androidx.navigation.NavController
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.rememberAsyncImagePainter
 import com.lj.crud_supabase.R
+import com.lj.crud_supabase.presentation.component.TrueButtonStyle
 import com.lj.crud_supabase.presentation.utils.formatPriceToIDR
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -44,12 +49,22 @@ fun ProductDetailsScreen(
     navController: NavController,
     productId: String?,
 ) {
+//    var name by remember { mutableStateOf("") }
+//    var _price by remember { mutableStateOf("") }
+
+
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
     val name by viewModel.name.collectAsState(initial = "")
     val price by viewModel.price.collectAsState(initial = 0.0)
     val imageUrl by viewModel.imageUrl.collectAsState(initial = "")
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val buttonColor = if (isPressed) Color(0xFF006400) else Color.Green
+    val isNameValid = name.trim().isNotEmpty()
+    val isPriceValid = price>0 && (price ?: 0.0) > 0
+    val isFormValid = isNameValid && isPriceValid
 
     Scaffold(
         topBar = {
@@ -156,8 +171,28 @@ fun ProductDetailsScreen(
             )
 
             Spacer(modifier = Modifier.weight(1f))
+            TrueButtonStyle(
+                onClick = {
+                    val imageByteArray = imageUri.value?.let { uriToByteArray(contentResolver, it) } ?: byteArrayOf()
+                    viewModel.onSaveProduct(image = imageByteArray)
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackbar("Product updated successfully!")
+                        navController.navigateUp()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = isFormValid,
+                sizeShape = 16
+//                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = if (isFormValid) "Save Change" else "Fill all fields",
+                    modifier = Modifier.padding(8.dp),
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
-            Button(
+            /*Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     val imageByteArray = imageUri.value?.let { uriToByteArray(contentResolver, it) } ?: byteArrayOf()
@@ -167,10 +202,16 @@ fun ProductDetailsScreen(
                         navController.navigateUp()
                     }
                 },
+                enabled = isFormValid,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = buttonColor,
+                    disabledContainerColor = Color.Black
+                ),
+                interactionSource = interactionSource,
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Text(text = "Save changes", modifier = Modifier.padding(8.dp))
-            }
+            }*/
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),

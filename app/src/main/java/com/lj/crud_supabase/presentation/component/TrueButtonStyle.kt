@@ -26,7 +26,7 @@ fun TrueButtonStyle(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    Verified: Boolean = false,
+    sizeShape: Int ,
     content: @Composable () -> Unit
 ) {
 
@@ -79,7 +79,7 @@ fun TrueButtonStyle(
             disabledContainerColor = Color(0x4F000000),
             disabledContentColor = Color(0x1EB0B0B0)
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(sizeShape.dp)
 
     ) {
         content()
@@ -95,6 +95,7 @@ fun TrueOutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    sizeShape: Int ,
     content: @Composable () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -142,7 +143,8 @@ fun TrueOutlinedButton(
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = containerColor,
             contentColor = contentColor
-        )
+        ),
+        shape = RoundedCornerShape(sizeShape.dp)
     ) {
         content()
     }
