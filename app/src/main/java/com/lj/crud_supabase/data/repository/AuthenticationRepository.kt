@@ -31,6 +31,7 @@ interface AuthenticationRepository {
      */
     suspend fun signUp(email: String, password: String): Boolean
 
+//    suspend fun signUp(email: String, password: String): Result<Unit>
     /**
      * Memulai alur masuk dengan Google.
      *

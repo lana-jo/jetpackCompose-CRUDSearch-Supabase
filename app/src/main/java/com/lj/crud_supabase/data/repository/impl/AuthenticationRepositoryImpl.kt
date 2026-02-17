@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 
@@ -52,12 +53,15 @@ class AuthenticationRepositoryImpl @Inject constructor(
 
     override suspend fun signUp(email: String, password: String): Boolean {
         return try {
+            Timber.d("Starting sign up for email: $email")
             auth.signUpWith(Email, "app://supabase.com/confirm") {
                 this.email = email
                 this.password = password
             }
+            Timber.d("Sign up successful for: $email")
             true
         } catch (e: Exception) {
+            Timber.e(e, "Sign up error for email: $email - Error: ${e.message}")
             false
         }
     }
