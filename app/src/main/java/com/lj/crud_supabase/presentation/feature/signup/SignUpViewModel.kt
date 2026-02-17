@@ -78,6 +78,7 @@ class SignUpViewModel @Inject constructor(
                         email = email.trim(),
                         password = password
                     )
+
                 )
 
                 when (result) {

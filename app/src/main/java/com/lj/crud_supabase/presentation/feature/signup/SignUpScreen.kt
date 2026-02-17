@@ -300,19 +300,28 @@ fun SignUpScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp),
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Already have an account? ")
+                        Text(
+                            text = "Already have an account?",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+
+                        Spacer(modifier = Modifier.width(4.dp))
+
                         TextButton(
-                            onClick = { navController.navigateUp() }
+                            onClick = { navController.navigateUp() },
+                            contentPadding = PaddingValues(0.dp) // 🔥 ini kuncinya
                         ) {
                             Text(
-                                "Sign In",
+                                text = "Sign In",
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
                     }
+
                 }
             }
         }
