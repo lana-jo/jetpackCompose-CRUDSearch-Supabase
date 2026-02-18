@@ -1,16 +1,11 @@
 package com.lj.crud_supabase.data.repository.impl
 
-import android.R.attr.mimeType
-import coil3.request.Options
 import com.lj.crud_supabase.BuildConfig
 import com.lj.crud_supabase.data.network.dto.ProductDto
 import com.lj.crud_supabase.data.repository.ProductRepository
 import com.lj.crud_supabase.domain.model.Product
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
-//import io.github.jan.supabase.storage.FileOptions
-import io.github.jan.supabase.storage.UploadOptionBuilder
-import io.ktor.client.utils.EmptyContent.contentType
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -75,6 +70,16 @@ class ProductRepositoryImpl @Inject constructor(
         imageFile: ByteArray
     ) {
 
+        val imagePath =
+            storage[BUCKET_NAME].upload(
+                path = "$name $imageName.png",
+                data = imageFile,
+            ){
+                this.upsert = true          // ← INI WAJIB ditambah supaya bisa overwrite
+                // Opsional tapi disarankan:
+//                contentType = "image/png"   // atau "image/jpeg" sesuai format gambar
+                // cacheControl = "3600"    // contoh: cache 1 jam
+            }.path
 
         if (imageFile.isNotEmpty()) {
             val oldProduct = try {
@@ -85,25 +90,18 @@ class ProductRepositoryImpl @Inject constructor(
             }
 
             // Hapus gambar lama dari storage jika ada
-            if (oldProduct?.image != null && oldProduct.image.isNotEmpty()) {
+            /*if (oldProduct?.image != null && oldProduct.image.isNotEmpty()) {
                 deleteOldImage(oldProduct.image)
-            }
+            }*/
 
-            val imagePath =
-                storage[BUCKET_NAME].upload(
-//                    path = "$imageName.png",
-                    path = "$name ++ $imageName.png",
-                    data = imageFile,
-//                    upsert = true,
-//                    options = file
-                ).path
+            // Update produk dengan gambar baru
 
             val imageUrl = storage.from(BUCKET_NAME).publicUrl(imagePath)
             postgrest["products"].update({
                 set("name", name)
                 set("price", price)
                 set("image", imageUrl)
-//                set("image", buildImageUrl(imageFileName = imageUrl))
+//                set("image", buildImageUrl(imageFileName = "$name $imageName.png"))
             }) {
                 filter {
                     eq("id", id)
