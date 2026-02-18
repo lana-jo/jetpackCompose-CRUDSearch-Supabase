@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.UUID
 import javax.inject.Inject
 
@@ -34,6 +35,7 @@ class AddProductViewModel @Inject constructor(
                 name = name,
                 price = price,
             )
+            Timber.tag("addImg").d("Image URL = ${product.image}")
             when (val result =
                 createProductUseCase.execute(CreateProductUseCase.Input(product = product))) {
                 is CreateProductUseCase.Output.Success -> {

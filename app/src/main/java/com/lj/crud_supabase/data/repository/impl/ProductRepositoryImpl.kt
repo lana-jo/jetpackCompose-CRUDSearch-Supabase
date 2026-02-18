@@ -1,11 +1,16 @@
 package com.lj.crud_supabase.data.repository.impl
 
+import android.R.attr.mimeType
+import coil3.request.Options
 import com.lj.crud_supabase.BuildConfig
 import com.lj.crud_supabase.data.network.dto.ProductDto
 import com.lj.crud_supabase.data.repository.ProductRepository
 import com.lj.crud_supabase.domain.model.Product
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
+//import io.github.jan.supabase.storage.FileOptions
+import io.github.jan.supabase.storage.UploadOptionBuilder
+import io.ktor.client.utils.EmptyContent.contentType
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -89,13 +94,16 @@ class ProductRepositoryImpl @Inject constructor(
 //                    path = "$imageName.png",
                     path = "$name ++ $imageName.png",
                     data = imageFile,
+//                    upsert = true,
+//                    options = file
                 ).path
 
             val imageUrl = storage.from(BUCKET_NAME).publicUrl(imagePath)
             postgrest["products"].update({
                 set("name", name)
                 set("price", price)
-                set("image", buildImageUrl(imageFileName = imageUrl))
+                set("image", imageUrl)
+//                set("image", buildImageUrl(imageFileName = imageUrl))
             }) {
                 filter {
                     eq("id", id)

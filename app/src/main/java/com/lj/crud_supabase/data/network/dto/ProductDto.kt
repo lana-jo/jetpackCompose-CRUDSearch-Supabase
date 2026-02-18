@@ -24,7 +24,7 @@ data class ProductDto(
     val price: Double,
 
     @SerialName("image")
-    val image: String? = "",
+    val image: String? = null,
 
     @SerialName("id")
     val id: String? = null,

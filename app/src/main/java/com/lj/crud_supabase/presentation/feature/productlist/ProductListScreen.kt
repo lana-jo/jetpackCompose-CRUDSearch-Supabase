@@ -1,5 +1,6 @@
 package com.lj.crud_supabase.presentation.feature.productlist
 
+import android.R.attr.contentDescription
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,6 +30,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import coil3.Image
+import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import com.lj.crud_supabase.R
 import com.lj.crud_supabase.domain.model.AuthState
@@ -71,7 +75,8 @@ fun ProductListScreen(
 
     Scaffold(
         topBar = {
-            ModernTopAppBar(authState = authState,
+            ModernTopAppBar(
+                authState = authState,
                 onSignIn = { navController.navigate(AuthenticationDestination.route) },
                 onSignOut = { viewModel.signOut() })
         },
@@ -156,11 +161,13 @@ fun ModernTopAppBar(
                         Text("Sign Out", color = MaterialTheme.colorScheme.primary)
                     }
                 }
+
                 AuthState.Unauthenticated -> {
                     TextButton(onClick = onSignIn) {
                         Text("Sign In", color = MaterialTheme.colorScheme.primary)
                     }
                 }
+
                 AuthState.Initializing -> {
                     // You can show a loading indicator here if needed
                 }
@@ -215,18 +222,23 @@ fun ProductListItem(product: Product, onClick: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 if (product.image.isNotEmpty()) {
-                    Image(
-                        painter = rememberAsyncImagePainter(product.image),
+
+                    AsyncImage(
+                        modifier = Modifier.fillMaxSize(),
+                        model = product.image,
                         contentDescription = product.name,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                        )
+                    Timber.tag("SupabaseImg").d("Image URL = ${product.image}")
+
+
                 } else {
                     Icon(
                         imageVector = Icons.Default.Warning,
                         contentDescription = "No image",
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
+                    Timber.tag("ErrorSupabaseImg").e("Image URL = ${product.image}")
+
                 }
             }
             Column(modifier = Modifier.weight(1f)) {

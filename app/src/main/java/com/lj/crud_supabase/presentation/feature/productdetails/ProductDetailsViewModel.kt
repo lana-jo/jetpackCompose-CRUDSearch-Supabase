@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -61,11 +62,13 @@ class ProductDetailsViewModel @Inject constructor(
                 )
             )
             when (result) {
+
                 is GetProductDetailsUseCase.Output.Success -> {
                     _product.emit(result.data)
                     _name.emit(result.data.name)
                     _price.emit(result.data.price)
                     _imageUrl.emit(result.data.image)
+                    Timber.tag("GetImg").d("Image URL = ${result.data.image}")
                 }
                 is GetProductDetailsUseCase.Output.Failure -> {
 
@@ -99,15 +102,21 @@ class ProductDetailsViewModel @Inject constructor(
      */
     override fun onSaveProduct(image: ByteArray) {
         viewModelScope.launch {
-            updateProductUseCase.execute(
-                UpdateProductUseCase.Input(
-                    id = _product.value?.id ?: "",
-                    price = _price.value,
-                    name = _name.value,
-                    imageFile = image,
-                    imageName = "image_${_product.value?.id}",
+            if (_product.value?.image !== null) {
+                updateProductUseCase.execute(
+                    UpdateProductUseCase.Input(
+                        id = _product.value?.id ?: "",
+                        price = _price.value,
+                        name = _name.value,
+                        imageFile = image,
+                        imageName = "image_${_product.value?.id}",
+
+                    )
+
                 )
-            )
+                Timber.tag("UpdateImg").d("Image URL = ${_imageUrl.value}")
+
+            }
         }
     }
 

@@ -1,13 +1,18 @@
 package com.lj.crud_supabase.presentation.feature.productlist
 
+import android.util.Log
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lj.crud_supabase.data.repository.AuthenticationRepository
+import com.lj.crud_supabase.di.SupabaseModule
+import com.lj.crud_supabase.di.SupabaseModule.provideSupabaseStorage
 import com.lj.crud_supabase.domain.model.AuthState
 import com.lj.crud_supabase.domain.model.Product
 import com.lj.crud_supabase.domain.usecase.DeleteProductUseCase
 import com.lj.crud_supabase.domain.usecase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,6 +22,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +43,7 @@ class ProductListViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     override val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
-    @OptIn(kotlinx.coroutines.FlowPreview::class)
+    @OptIn(FlowPreview::class)
     override val productList: StateFlow<List<Product>> = searchQuery
         .debounce(500L)
         .combine(_allProducts) { query, products ->
@@ -78,6 +84,11 @@ class ProductListViewModel @Inject constructor(
         }
     }
 
+    fun readFile(byteArray: ByteArray){
+        viewModelScope.launch {
+
+        }
+    }
     override fun removeItem(product: Product) {
         viewModelScope.launch {
             // Optimistically update the UI
@@ -99,5 +110,26 @@ class ProductListViewModel @Inject constructor(
 
     override fun onSearchQueryChange(query: String) {
         _searchQuery.value = query
+    }
+    // Example – put this in your ViewModel or wherever you generate the URL
+    suspend fun getImageUrl(bucket: String, path: String): String? {
+        return try {
+            val cleanPath = path.trim().removePrefix("/").removeSuffix("/")  // remove bad slashes
+            Timber.tag("SupabaseImg")
+                .d("Bucket = $bucket | Raw path = $path | Clean path = $cleanPath")
+
+            val url = provideSupabaseStorage(
+                client = SupabaseModule.provideSupabaseClient()
+            )
+                .from(bucket)
+                .publicUrl(cleanPath)   // ← or .getPublicUrl() if your version uses that name
+
+            Timber.tag("SupabaseImg").d("Generated public URL → $url")
+            url
+        } catch (e: Exception) {
+            Log.e("SupabaseImg", "Failed to get public URL", e)
+            e.printStackTrace()
+            null   // or throw if you want
+        }
     }
 }
