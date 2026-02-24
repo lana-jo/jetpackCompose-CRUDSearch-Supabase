@@ -80,3 +80,11 @@ object SignUpDestination: Destination {
     override val route = "signup"
     override val title = "Sign Up"
 }
+
+/**
+ * Tujuan untuk layar cashier (kasir).
+ */
+object CashierDestination : Destination {
+    override val route = "cashier"
+    override val title = "Cashier"
+}
