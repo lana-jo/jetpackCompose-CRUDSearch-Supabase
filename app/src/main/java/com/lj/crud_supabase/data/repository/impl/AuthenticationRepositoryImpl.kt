@@ -2,7 +2,7 @@ package com.lj.crud_supabase.data.repository.impl
 
 import android.util.Log
 import com.lj.crud_supabase.data.repository.AuthenticationRepository
-import com.lj.crud_supabase.domain.model.AuthState
+import com.lj.crud_supabase.domain.models.AuthState
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.providers.Google

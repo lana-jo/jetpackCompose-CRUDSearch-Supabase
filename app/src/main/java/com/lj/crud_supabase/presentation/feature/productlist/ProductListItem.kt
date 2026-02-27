@@ -1,59 +1,82 @@
 package com.lj.crud_supabase.presentation.feature.productlist
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil3.annotation.ExperimentalCoilApi
-import coil3.compose.rememberAsyncImagePainter
-import com.lj.crud_supabase.domain.model.Product
+import coil3.compose.AsyncImage
+import com.lj.crud_supabase.domain.models.Product
+import com.lj.crud_supabase.presentation.utils.formatPriceToIDR
+import timber.log.Timber
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductListItem(
-    modifier: Modifier = Modifier,
-    product: Product,
-    onClick: () -> Unit
-) {
+fun ProductListItem(product: Product, onClick: () -> Unit) {
     Card(
-        modifier = modifier
-            .padding(4.dp)
+        onClick = onClick,
+        modifier = Modifier
             .fillMaxWidth(),
-        elevation = 8.dp,
-        shape = RoundedCornerShape(12.dp),
-        onClick = onClick
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Row(
-            modifier = modifier.padding(10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Image(
-                contentDescription = null,
-                painter = rememberAsyncImagePainter(product.image),
-                contentScale = ContentScale.Fit,
+            Box(
                 modifier = Modifier
-                    .padding(16.dp, 8.dp)
-                    .size(64.dp)
-            )
-            Text(
-                text = product.name,
-                modifier = modifier.weight(1.0f),
-                color = Color.Red
-            )
-            Text(
-                text = "$${product.price}",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
+                    .size(60.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                if (product.image.isNotEmpty()) {
+
+                    AsyncImage(
+                        modifier = Modifier.fillMaxSize(),
+                        model = product.image,
+                        contentDescription = product.name,
+                    )
+                    Timber.tag("SupabaseImg").d("Image URL = ${product.image}")
+
+
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = "No image",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Timber.tag("ErrorSupabaseImg").e("Image URL = ${product.image}")
+
+                }
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = product.name,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    text = formatPriceToIDR(product.price),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

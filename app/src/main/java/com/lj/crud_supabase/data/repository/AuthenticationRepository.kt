@@ -1,6 +1,6 @@
 package com.lj.crud_supabase.data.repository
 
-import com.lj.crud_supabase.domain.model.AuthState
+import com.lj.crud_supabase.domain.models.AuthState
 import kotlinx.coroutines.flow.StateFlow
 
 /**

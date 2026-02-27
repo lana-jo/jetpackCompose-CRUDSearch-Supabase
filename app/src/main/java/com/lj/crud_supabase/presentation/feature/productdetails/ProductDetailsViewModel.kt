@@ -3,7 +3,7 @@ package com.lj.crud_supabase.presentation.feature.productdetails
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lj.crud_supabase.domain.model.Product
+import com.lj.crud_supabase.domain.models.Product
 import com.lj.crud_supabase.domain.usecase.GetProductDetailsUseCase
 import com.lj.crud_supabase.domain.usecase.UpdateProductUseCase
 import com.lj.crud_supabase.presentation.navigation.ProductDetailsDestination

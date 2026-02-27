@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.lj.crud_supabase.presentation.feature.appdrawer.AppRoot
 import com.lj.crud_supabase.presentation.navigation.ProductListDestination
 import com.lj.crud_supabase.presentation.navigation.navRegistration
 import com.lj.crud_supabase.theme.ProductTheme
