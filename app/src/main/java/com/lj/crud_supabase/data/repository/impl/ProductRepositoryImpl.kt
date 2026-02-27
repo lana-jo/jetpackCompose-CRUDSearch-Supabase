@@ -3,9 +3,12 @@ package com.lj.crud_supabase.data.repository.impl
 import com.lj.crud_supabase.BuildConfig
 import com.lj.crud_supabase.data.network.dto.ProductDto
 import com.lj.crud_supabase.data.repository.ProductRepository
-import com.lj.crud_supabase.domain.model.Product
+import com.lj.crud_supabase.domain.models.Product
+import com.lj.crud_supabase.domain.models.Sale
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -13,6 +16,34 @@ class ProductRepositoryImpl @Inject constructor(
     private val postgrest: Postgrest,
     private val storage: Storage,
 ) : ProductRepository {
+    override suspend fun searchProducts(query: String): List<Product> {
+        return emptyList()
+    }
+    /*override suspend fun searchProducts(query: String): List<Product> {
+        return try {
+            val dtos = postgrest["products"].select {
+                filter {
+                    ilike("name", "%$query%")
+                }
+            }.decodeList<ProductDto>()
+            dtos.map { dto ->
+                Product(
+                    id = dto.id,
+                    name = dto.name,
+                    price = dto.price,
+                    image = dto.image ?: "",
+                    stock = dto.stock ?: 0 // Asumsi ada stock di ProductDto, tambah jika belum
+                )
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Error searching products")
+            emptyList()
+        }
+    }*//*
+    override fun searchProducts(query: String): Flow<List<Product>> = flow {
+        val results = postgrest["products"].select { ilike("name", "%$query%") }.decodeList<Product>()
+        emit(results)
+    }*/
 
     private companion object {
         const val BUCKET_NAME = "Product%20Image"
@@ -60,6 +91,28 @@ class ProductRepositoryImpl @Inject constructor(
                 eq("id", id)
             }
         }
+    }
+
+    override suspend fun insertSale(sale: Sale) {
+        /*val saleDto = SaleDto(
+            products = Json.encodeToString(sale.products),
+            total = sale.*/
+      /*  return  try {
+            postgrest.from("sales").insert(sale)
+        } catch (e: Exception) {
+            throw e // Handle in ViewModel
+        }*/
+        return Timber.d("Sale inserted: $sale")
+    }
+
+    override suspend fun updateStock(id: String, quantitySold: Int) {
+        return Timber.d("Updating stock for product $id by $quantitySold")
+        /*return   try {
+            val current = postgrest.from("products").select { eq("id", id) }.decodeSingle<ProductDto>().stock ?: 0
+            postgrest.from("products").update({ set("stock", current - quantitySold) }) { eq("id", id) }
+        } catch (e: Exception) {
+            throw e
+        }*/
     }
 
     override suspend fun updateProduct(

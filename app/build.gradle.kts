@@ -87,6 +87,9 @@ dependencies {
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.room.common.jvm)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.ui.graphics)
+    implementation(libs.androidx.compose.ui.text)
     ksp(libs.hilt.android.compiler)
 
 // Hilt Compose
@@ -161,5 +164,13 @@ dependencies {
 
     implementation(libs.accompanist.swiperefresh)
 
+    // Room (latest: 2.8.4)
+    implementation("androidx.room:room-runtime:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.4") // For coroutines/Flow
+    ksp("androidx.room:room-compiler:2.8.4") // Annotation processor
+
+   /* // For JSON in Room (if not already, for Sale products)
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.1") // Or use kotlinx.serialization if preferred
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")*/
 
 }

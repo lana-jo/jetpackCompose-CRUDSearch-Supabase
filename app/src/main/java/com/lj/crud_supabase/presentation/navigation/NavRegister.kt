@@ -5,10 +5,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.lj.crud_supabase.presentation.feature.addproduct.AddProductScreen
 import com.lj.crud_supabase.presentation.feature.cashier.CashierScreen
+//import com.lj.crud_supabase.presentation.feature.cashier.CashierScreen
 import com.lj.crud_supabase.presentation.feature.signin.SignInScreen
 import com.lj.crud_supabase.presentation.feature.productdetails.ProductDetailsScreen
 import com.lj.crud_supabase.presentation.feature.productlist.ProductListScreen
-import com.lj.crud_supabase.presentation.feature.signin.SignInSuccessScreen
 import com.lj.crud_supabase.presentation.feature.signup.SignUpScreen
 
 /**
@@ -57,6 +57,9 @@ fun NavGraphBuilder.navRegistration(navController: NavController) {
     composable(CashierDestination.route) {
         CashierScreen(navController = navController)
     }
+
+
+
 
     /**
      * Tujuan untuk menampilkan detail produk.

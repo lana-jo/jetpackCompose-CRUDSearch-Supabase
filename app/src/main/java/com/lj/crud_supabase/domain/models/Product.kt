@@ -1,4 +1,4 @@
-package com.lj.crud_supabase.domain.model
+package com.lj.crud_supabase.domain.models
 
 data class Product(
     val id: String,

@@ -88,3 +88,11 @@ object CashierDestination : Destination {
     override val route = "cashier"
     override val title = "Cashier"
 }
+/**
+ * Tujuan untuk layar history (riwayat transaksi).
+ */
+object HistoryDestination : Destination {
+    override val route = "history"
+    override val title = "History"
+}
+
