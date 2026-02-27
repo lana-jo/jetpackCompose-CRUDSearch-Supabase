@@ -1,4 +1,4 @@
-package com.lj.crud_supabase.domain.models
+package com.lj.crud_supabase.domain.model
 
 sealed interface AuthState {
     data object Initializing : AuthState

@@ -1,13 +1,14 @@
 package com.lj.crud_supabase.presentation.feature.productlist
 
 import android.util.Log
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lj.crud_supabase.data.repository.AuthenticationRepository
 import com.lj.crud_supabase.di.SupabaseModule
 import com.lj.crud_supabase.di.SupabaseModule.provideSupabaseStorage
-import com.lj.crud_supabase.domain.models.AuthState
-import com.lj.crud_supabase.domain.models.Product
+import com.lj.crud_supabase.domain.model.AuthState
+import com.lj.crud_supabase.domain.model.Product
 import com.lj.crud_supabase.domain.usecase.DeleteProductUseCase
 import com.lj.crud_supabase.domain.usecase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

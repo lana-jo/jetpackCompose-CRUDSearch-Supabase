@@ -123,7 +123,7 @@ package com.lj.crud_supabase.presentation.feature.signup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lj.crud_supabase.data.repository.AuthRepo
-import com.lj.crud_supabase.domain.models.SignUpUiState
+import com.lj.crud_supabase.domain.model.SignUpUiState
 import com.lj.crud_supabase.domain.usecase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

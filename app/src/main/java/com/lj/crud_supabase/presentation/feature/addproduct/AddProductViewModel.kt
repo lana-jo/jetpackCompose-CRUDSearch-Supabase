@@ -2,7 +2,7 @@ package com.lj.crud_supabase.presentation.feature.addproduct
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lj.crud_supabase.domain.models.Product
+import com.lj.crud_supabase.domain.model.Product
 import com.lj.crud_supabase.domain.usecase.CreateProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

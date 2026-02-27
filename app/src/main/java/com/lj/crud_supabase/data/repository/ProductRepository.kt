@@ -1,16 +1,12 @@
 package com.lj.crud_supabase.data.repository
 
 import com.lj.crud_supabase.data.network.dto.ProductDto
-import com.lj.crud_supabase.domain.models.Product
-import com.lj.crud_supabase.domain.models.Sale
+import com.lj.crud_supabase.domain.model.Product
 
 /**
  * Mendefinisikan kontrak untuk repositori yang mengelola operasi terkait produk.
  */
 interface ProductRepository {
-
-    suspend fun searchProducts(query: String): List<Product>
-
     /**
      * Membuat produk baru.
      *
@@ -41,9 +37,6 @@ interface ProductRepository {
      */
     suspend fun deleteProduct(id: String)
 
-
-    suspend fun insertSale(sale: Sale)
-    suspend fun updateStock(id: String, quantitySold: Int)
     /**
      * Memperbarui produk yang sudah ada.
      *

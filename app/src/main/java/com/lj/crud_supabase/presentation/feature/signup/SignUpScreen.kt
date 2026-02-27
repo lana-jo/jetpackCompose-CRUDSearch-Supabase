@@ -368,7 +368,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.lj.crud_supabase.domain.models.SignUpUiState
+import com.lj.crud_supabase.domain.model.SignUpUiState
 import com.lj.crud_supabase.presentation.component.TrueButtonStyle
 import com.lj.crud_supabase.presentation.utils.InputValidator
 import kotlinx.coroutines.launch

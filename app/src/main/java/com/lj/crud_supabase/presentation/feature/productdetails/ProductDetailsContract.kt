@@ -1,6 +1,6 @@
 package com.lj.crud_supabase.presentation.feature.productdetails
 
-import com.lj.crud_supabase.domain.models.Product
+import com.lj.crud_supabase.domain.model.Product
 import kotlinx.coroutines.flow.Flow
 
 interface ProductDetailsContract {

@@ -1,7 +1,7 @@
 package com.lj.crud_supabase.domain.usecase.impl
 
 import com.lj.crud_supabase.data.repository.ProductRepository
-import com.lj.crud_supabase.domain.models.Product
+import com.lj.crud_supabase.domain.model.Product
 import com.lj.crud_supabase.domain.usecase.GetProductsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
