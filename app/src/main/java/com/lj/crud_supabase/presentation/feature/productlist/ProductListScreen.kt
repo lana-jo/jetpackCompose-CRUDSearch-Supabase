@@ -5,24 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -30,22 +20,13 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil3.compose.AsyncImage
-import com.lj.crud_supabase.R
 import com.lj.crud_supabase.domain.models.AuthState
-import com.lj.crud_supabase.domain.models.Product
-import com.lj.crud_supabase.presentation.navigation.AddProductDestination
-import com.lj.crud_supabase.presentation.navigation.AuthenticationDestination
-import com.lj.crud_supabase.presentation.navigation.ProductDetailsDestination
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.lj.crud_supabase.presentation.component.MainAppScaffold
 import com.lj.crud_supabase.presentation.component.SearchBar
 import com.lj.crud_supabase.presentation.component.SwipeToDeleteItem
-import com.lj.crud_supabase.presentation.feature.appdrawer.AppDrawerScreen
 import com.lj.crud_supabase.presentation.navigation.Destination
-import com.lj.crud_supabase.presentation.utils.formatPriceToIDR
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,11 +36,6 @@ fun ProductListScreen(
     navController: NavController,
     viewModel: ProductListViewModel = hiltViewModel(),
 ) {
-
-
-    var currentDestination: AppDestinations by rememberSaveable {
-        mutableStateOf(AppDestinations.HOME)
-    }
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -83,23 +59,17 @@ fun ProductListScreen(
     val authState by viewModel.authState.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val productList by viewModel.productList.collectAsStateWithLifecycle(initialValue = emptyList())
-
-    Scaffold(
-        topBar = {
-            ModernTopAppBar(
-                authState = authState,
-                onSignIn = { navController.navigate(AuthenticationDestination.route) },
-                onSignOut = { viewModel.signOut() },
-                )
+    MainAppScaffold(
+        currentRoute = Destination.ProductListDestination.route,
+        authState = authState,
+        onNavigate = { route ->
+            navController.navigate(route)
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navController.navigate(AddProductDestination.route) },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Product")
-            }
+        onSignIn = {
+            navController.navigate(Destination.SigninDestination.route)
+        },
+        onSignOut = {
+            viewModel.signOut()
         }
     ) { padding ->
         SwipeRefresh(
@@ -137,7 +107,7 @@ fun ProductListScreen(
                                     product = product,
                                     onClick = {
                                         navController.navigate(
-                                            ProductDetailsDestination.createRouteWithParam(product.id)
+                                            Destination.ProductDetails.createRoute(product.id)
                                         )
                                     }
                                 )

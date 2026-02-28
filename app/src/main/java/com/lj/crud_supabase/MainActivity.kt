@@ -11,7 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lj.crud_supabase.presentation.feature.appdrawer.AppRoot
-import com.lj.crud_supabase.presentation.navigation.ProductListDestination
+//import com.lj.crud_supabase.presentation.navigation.ProductListDestination
+import com.lj.crud_supabase.presentation.navigation.Destination
 import com.lj.crud_supabase.presentation.navigation.navRegistration
 import com.lj.crud_supabase.theme.ProductTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,7 +53,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold { innerPadding ->
                     NavHost(
                         navController,
-                        startDestination = ProductListDestination.route,
+                        startDestination = Destination.ProductListDestination.route,
                         Modifier.padding(innerPadding)
                     ) {
                         navRegistration(navController)

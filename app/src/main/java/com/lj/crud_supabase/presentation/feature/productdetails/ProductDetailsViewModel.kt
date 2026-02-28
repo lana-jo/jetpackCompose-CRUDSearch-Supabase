@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.lj.crud_supabase.domain.models.Product
 import com.lj.crud_supabase.domain.usecase.GetProductDetailsUseCase
 import com.lj.crud_supabase.domain.usecase.UpdateProductUseCase
-import com.lj.crud_supabase.presentation.navigation.ProductDetailsDestination
+import com.lj.crud_supabase.presentation.navigation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +43,7 @@ class ProductDetailsViewModel @Inject constructor(
     override val imageUrl: Flow<String> = _imageUrl
 
     init {
-        val productId = savedStateHandle.get<String>(ProductDetailsDestination.productId)
+        val productId = savedStateHandle.get<String>(Destination.ProductDetails.productId)
         productId?.let {
             getProduct(productId = it)
         }
