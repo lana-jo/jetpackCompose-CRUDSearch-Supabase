@@ -1,6 +1,7 @@
 package com.lj.crud_supabase.presentation.feature.productlist
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -70,8 +71,25 @@ fun ProductListScreen(
         },
         onSignOut = {
             viewModel.signOut()
+        },
+        floatingActionButton = {
+            /*AnimatedVisibility(
+                visible = isVisible,
+
+            ) { }*/
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(Destination.AddProductDestination.route)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Tambah Produk"
+                )
+            }
         }
     ) { padding ->
+
         SwipeRefresh(
             state = swipeRefreshState,
             onRefresh = { viewModel.getProducts() },

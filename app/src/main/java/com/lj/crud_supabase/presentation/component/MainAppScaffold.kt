@@ -1,14 +1,19 @@
 package com.lj.crud_supabase.presentation.component
 
+import android.widget.Button
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.FloatingWindow
 import kotlinx.coroutines.launch
 import com.lj.crud_supabase.domain.models.AuthState
 import com.lj.crud_supabase.presentation.feature.appdrawer.AppDrawerContent
+import com.lj.crud_supabase.presentation.navigation.Destination
+import java.util.EventListener
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -18,6 +23,7 @@ fun MainAppScaffold(
     onNavigate: (String) -> Unit,
     onSignIn: () -> Unit,
     onSignOut: () -> Unit,
+    floatingActionButton: @Composable (() -> Unit)? = null,
     content: @Composable (PaddingValues) -> Unit
 ) {
 
@@ -75,8 +81,11 @@ fun MainAppScaffold(
                         }
                     }
                 )
+            }, floatingActionButton = {
+                floatingActionButton?.invoke()
             }
-        ) { padding ->
+        )
+        { padding ->
             content(padding)
         }
     }

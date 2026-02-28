@@ -12,19 +12,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 @Composable
 fun DrawerItem(
     label: String,
-    icon: ImageVector,
+    icon: ImageVector? = null,
     route: String,
     currentRoute: String?,
     onClick: (String) -> Unit
 ) {
     NavigationDrawerItem(
         label = { Text(text = label) },
-        icon = {
-            Icon(
-                imageVector = icon,
-                contentDescription = label
-            )
-        },
+        icon = if (icon != null) {
+            {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = label
+                )
+            }
+        } else null,
         selected = currentRoute == route,
         onClick = { onClick(route) },
         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
