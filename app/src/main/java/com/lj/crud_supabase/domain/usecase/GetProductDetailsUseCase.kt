@@ -1,6 +1,6 @@
 package com.lj.crud_supabase.domain.usecase
 
-import com.lj.crud_supabase.domain.model.Product
+import com.lj.crud_supabase.domain.models.Product
 
 /**
  * Kasus penggunaan untuk mengambil detail suatu produk.
