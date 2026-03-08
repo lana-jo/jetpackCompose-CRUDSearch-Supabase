@@ -93,4 +93,7 @@ object SupabaseModule {
         return client.storage
     }
 
+    fun getImageUrl(filePath: String): String {
+        return "${BuildConfig.BASE_URL}/storage/v1/object/public/Product Image/$filePath"
+    }
 }
