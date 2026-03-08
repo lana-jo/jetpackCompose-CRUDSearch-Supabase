@@ -123,9 +123,11 @@ class ProductRepositoryImpl @Inject constructor(
         imageFile: ByteArray
     ) {
 
+        val safeName = name.replace(" ", "%20")
+
         val imagePath =
             storage[BUCKET_NAME].upload(
-                path = "$name $imageName.png",
+                path = "$safeName%20$imageName.png",
                 data = imageFile,
             ){
                 this.upsert = true          // ← INI WAJIB ditambah supaya bisa overwrite
